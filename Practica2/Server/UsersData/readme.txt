@@ -1,0 +1,5 @@
+name
+parentalSurname
+maternalSurname
+statusInscription
+scheduleType
