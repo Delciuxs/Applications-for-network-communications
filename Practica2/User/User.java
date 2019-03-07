@@ -1,9 +1,28 @@
 import java.io.*;
 import java.util.*;
-import javax.swing.JFileChooser;
 import java.net.*;
+import javax.swing.JFileChooser;
+import java.awt.event.*;
+import java.awt.*;
+import javax.swing.*;   
+import java.io.*;
+import java.util.HashSet;
+import org.xml.sax.Attributes;
 
-public class User{
+public class User extends javax.swing.JFrame {
+
+	private static javax.swing.JButton btnEntrar;
+    private static javax.swing.JButton btnRegistrarse;
+    private static javax.swing.JLabel lContra;
+    private static javax.swing.JLabel lLogin;
+    private static javax.swing.JLabel lUsuario;
+    private static javax.swing.JTextField txtContra;
+    private static javax.swing.JTextField txtUsuario;
+
+    private static DatagramSocket studentInfo;
+    private static BufferedReader br;
+    private static String host;
+    private static int port;
 
     public static void sendLoginOrRegistration(String host, int port ,Object student, DatagramSocket studentInfo){
         InetAddress address = null;
@@ -28,7 +47,7 @@ public class User{
         }
     }
 
-    public static Student recieveStatusLogin(DatagramSocket studentInfo){
+    public static Student receiveStatusLogin(DatagramSocket studentInfo){
         Student student = null;
         try {
             DatagramPacket studentInfoPacket = new DatagramPacket(new byte[65535], 65535);
@@ -47,6 +66,8 @@ public class User{
         return student;
         
     }
+
+
 
     public static byte[] choosePhoto(){
         byte []binaryPhoto = new byte[50000];
@@ -150,7 +171,7 @@ public class User{
         }
     }
 
-    public static void modifySchedule(String host, int port, DatagramSocket studentInfo, String choosedSchedule){
+    public static void modifySchedule(String host, int port, DatagramSocket studentInfo, String chosenSchedule){
         InetAddress address2 = null;
         try {
             address2 = InetAddress.getByName(host);
@@ -159,23 +180,119 @@ public class User{
             System.exit(1);
         }
         try {
-            byte []b = choosedSchedule.getBytes();
+            byte []b = chosenSchedule.getBytes();
             DatagramPacket modify = new DatagramPacket(b, b.length, address2, port);
             studentInfo.send(modify);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private void initComponents() {
+
+        lLogin = new javax.swing.JLabel();
+        btnEntrar = new javax.swing.JButton();
+        btnRegistrarse = new javax.swing.JButton();
+        txtUsuario = new javax.swing.JTextField();
+        txtContra = new javax.swing.JTextField();
+        lUsuario = new javax.swing.JLabel();
+        lContra = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Login");
+        //setSize(new java.awt.Dimension(500, 500));
+        getContentPane().setLayout(null);
+
+        lLogin.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        lLogin.setText("Login");
+        getContentPane().add(lLogin);
+        lLogin.setBounds(230, 70, 90, 40);
+
+        btnEntrar.setText("Entrar");
+        btnEntrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startLogin(evt);
+            }
+        });
+        getContentPane().add(btnEntrar);
+        btnEntrar.setBounds(140, 270, 70, 23);
+
+        btnRegistrarse.setText("Registrarse");
+        getContentPane().add(btnRegistrarse);
+        btnRegistrarse.setBounds(310, 270, 110, 23);
+        getContentPane().add(txtUsuario);
+        txtUsuario.setBounds(260, 160, 100, 20);
+        getContentPane().add(txtContra);
+        txtContra.setBounds(260, 200, 100, 20);
+
+        lUsuario.setText("Usuario");
+        getContentPane().add(lUsuario);
+        lUsuario.setBounds(170, 160, 50, 14);
+
+        lContra.setText("Contrasena");
+        getContentPane().add(lContra);
+        lContra.setBounds(170, 200, 70, 14);
+
+        pack();
+    }
+
+    public User() {
+        initComponents();
+    }
+
+    public static void startLogin(java.awt.event.ActionEvent evt){
+    	String studentId = txtUsuario.getText();
+    	String studentPassword = txtContra.getText();
+
+    	//Send the students information to the server 
+        Login studentLogin = new Login(studentId, studentPassword);
+        sendLoginOrRegistration(host, port, studentLogin, studentInfo);
+        //Receive the status of the login
+        Student student = receiveStatusLogin(studentInfo);
+        String statusLogin = student.getStatusLogin();
+        if((statusLogin.equalsIgnoreCase("Login Correct"))){
+            extractInfoStudent(student, studentId);
+
+            //
+            if(student.getSchedule() == null){
+                System.out.println("Choose a schedule");
+                String chosenSchedule = "";
+                modifySchedule(host, port, studentInfo, chosenSchedule);
+                Student newStudent = receiveStatusLogin(studentInfo);
+                extractInfoStudent(newStudent, studentId);
+                
+            }
+            //
+        }else{
+            System.out.println(statusLogin);
+        }
+
+        studentInfo.close();
+
+    }
+
     public static void main(String[] args) throws IOException{
-        DatagramSocket studentInfo = new DatagramSocket();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-       
+    	java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+            	User f = new User();
+		        f.setTitle("Practica 2");
+		        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		        f.setSize(700,500);
+		        f.setVisible(true);
+		        f.setLocationRelativeTo(null);
+                //new User().setVisible(true);
+            }
+        });
+
+        studentInfo = new DatagramSocket();
+        br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Enter the server address:");
-        String host = br.readLine();
+        host = br.readLine();
         System.out.println("Enter the server port:");
-        int port = Integer.parseInt(br.readLine());
+        port = Integer.parseInt(br.readLine());
 
         System.out.println("Student Management System\n");
+        /*
         System.out.println("If you want to log in press 1, if you want to register press 2");
         int option = Integer.parseInt(br.readLine());
         
@@ -191,7 +308,7 @@ public class User{
             Login studentLogin = new Login(studentId, studentPassword);
             sendLoginOrRegistration(host, port, studentLogin, studentInfo);
             //Receive the status of the login
-            Student student = recieveStatusLogin(studentInfo);
+            Student student = receiveStatusLogin(studentInfo);
             String statusLogin = student.getStatusLogin();
             if((statusLogin.equalsIgnoreCase("Login Correct"))){
                 extractInfoStudent(student, studentId);
@@ -199,9 +316,9 @@ public class User{
                 //
                 if(student.getSchedule() == null){
                     System.out.println("Choose a schedule");
-                    String choosedSchedule = br.readLine();
-                    modifySchedule(host, port, studentInfo, choosedSchedule);
-                    Student newStudent = recieveStatusLogin(studentInfo);
+                    String chosenSchedule = br.readLine();
+                    modifySchedule(host, port, studentInfo, chosenSchedule);
+                    Student newStudent = receiveStatusLogin(studentInfo);
                     extractInfoStudent(newStudent, studentId);
                     
                 }
@@ -230,22 +347,23 @@ public class User{
             Register studentRegister = new Register(id, name, parentalSurname, maternalSurname, password, binaryPhoto);
             sendLoginOrRegistration(host, port, studentRegister, studentInfo);  
             
-            Student student = recieveStatusLogin(studentInfo);
+            Student student = receiveStatusLogin(studentInfo);
             String statusLogin = student.getStatusLogin();
 
             if(statusLogin.equalsIgnoreCase("Login Correct")){
                 extractInfoStudent(student, id);
                 System.out.println("Choose a schedule");
-                String choosedSchedule = br.readLine();
-                modifySchedule(host, port, studentInfo, choosedSchedule);
-                Student newStudent = recieveStatusLogin(studentInfo);
+                String chosenSchedule = br.readLine();
+                modifySchedule(host, port, studentInfo, chosenSchedule);
+                Student newStudent = receiveStatusLogin(studentInfo);
                 extractInfoStudent(newStudent, id);
             }else{
                 System.out.println(statusLogin);
             }
 
         }
-        studentInfo.close();
+        */
+        //studentInfo.close();
 
 
 

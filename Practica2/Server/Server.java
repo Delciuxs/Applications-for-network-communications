@@ -220,6 +220,7 @@ public class Server{
                 System.out.println("\nWaiting...");
                 DatagramPacket studentInfo = new DatagramPacket(new byte[65535], 65535);
                 s.receive(studentInfo);
+                
                 InetAddress destinationAddress = studentInfo.getAddress();
                 int port = studentInfo.getPort();
                 System.out.println("Datagram received from " + destinationAddress + " : " + port);
