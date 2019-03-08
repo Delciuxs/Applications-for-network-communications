@@ -9,15 +9,20 @@ import java.io.*;
 import java.util.HashSet;
 import org.xml.sax.Attributes;
 
-public class User extends javax.swing.JFrame {
+public class RegisterV extends javax.swing.JFrame {
 
-	private static javax.swing.JButton btnEntrar;
-    private static javax.swing.JButton btnRegistrarse;
-    private static javax.swing.JLabel lContra;
-    private static javax.swing.JLabel lLogin;
-    private static javax.swing.JLabel lUsuario;
-    private static javax.swing.JTextField txtContra;
-    private static javax.swing.JTextField txtUsuario;
+	private static JButton btnRegistrarse;
+    private static JLabel lBoleta;
+    private static JLabel lContra;
+    private static JLabel lMat;
+    private static JLabel lNombre;
+    private static JLabel lPat;
+    private static JLabel lRegistro;
+    private static JTextField txtBoleta;
+    private static JTextField txtContra;
+    private static JTextField txtMat;
+    private static JTextField txtNombre;
+    private static JTextField txtPat;
 
     private static DatagramSocket studentInfo;
     private static BufferedReader br;
@@ -190,102 +195,117 @@ public class User extends javax.swing.JFrame {
 
     private void initComponents() {
 
-        lLogin = new javax.swing.JLabel();
-        btnEntrar = new javax.swing.JButton();
-        btnRegistrarse = new javax.swing.JButton();
-        txtUsuario = new javax.swing.JTextField();
-        txtContra = new javax.swing.JTextField();
-        lUsuario = new javax.swing.JLabel();
+        lRegistro = new javax.swing.JLabel();
+        lNombre = new javax.swing.JLabel();
+        lPat = new javax.swing.JLabel();
+        lBoleta = new javax.swing.JLabel();
+        lMat = new javax.swing.JLabel();
         lContra = new javax.swing.JLabel();
+        btnRegistrarse = new javax.swing.JButton();
+        txtBoleta = new javax.swing.JTextField();
+        txtNombre = new javax.swing.JTextField();
+        txtPat = new javax.swing.JTextField();
+        txtMat = new javax.swing.JTextField();
+        txtContra = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Login");
-        //setSize(new java.awt.Dimension(500, 500));
         getContentPane().setLayout(null);
 
-        lLogin.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        lLogin.setText("Login");
-        getContentPane().add(lLogin);
-        lLogin.setBounds(230, 70, 90, 40);
+        lRegistro.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        lRegistro.setText("Registro");
+        getContentPane().add(lRegistro);
+        lRegistro.setBounds(219, 32, 97, 29);
 
-        btnEntrar.setText("Entrar");
-        btnEntrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startLogin(evt);
-            }
-        });
-        getContentPane().add(btnEntrar);
-        btnEntrar.setBounds(140, 270, 70, 23);
+        lNombre.setText("Nombre:");
+        getContentPane().add(lNombre);
+        lNombre.setBounds(160, 135, 60, 14);
+
+        lPat.setText("Apellido paterno:");
+        getContentPane().add(lPat);
+        lPat.setBounds(119, 170, 100, 14);
+
+        lBoleta.setText("Boleta:");
+        getContentPane().add(lBoleta);
+        lBoleta.setBounds(167, 100, 50, 14);
+
+        lMat.setText("Apellido materno:");
+        getContentPane().add(lMat);
+        lMat.setBounds(117, 202, 100, 14);
+
+        lContra.setText("Contrasena:");
+        getContentPane().add(lContra);
+        lContra.setBounds(141, 237, 70, 14);
 
         btnRegistrarse.setText("Registrarse");
         btnRegistrarse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ventanaRegistrarse(evt);
+                startRegister(evt);
             }
         });
         getContentPane().add(btnRegistrarse);
-        btnRegistrarse.setBounds(310, 270, 110, 23);
-        getContentPane().add(txtUsuario);
-        txtUsuario.setBounds(260, 160, 100, 20);
+        btnRegistrarse.setBounds(229, 271, 120, 23);
+        getContentPane().add(txtBoleta);
+        txtBoleta.setBounds(229, 94, 100, 20);
+        getContentPane().add(txtNombre);
+        txtNombre.setBounds(229, 132, 100, 20);
+        getContentPane().add(txtPat);
+        txtPat.setBounds(229, 164, 100, 20);
+        getContentPane().add(txtMat);
+        txtMat.setBounds(229, 196, 100, 20);
         getContentPane().add(txtContra);
-        txtContra.setBounds(260, 200, 100, 20);
-
-        lUsuario.setText("Usuario");
-        getContentPane().add(lUsuario);
-        lUsuario.setBounds(170, 160, 50, 14);
-
-        lContra.setText("Contrasena");
-        getContentPane().add(lContra);
-        lContra.setBounds(170, 200, 70, 14);
+        txtContra.setBounds(229, 234, 100, 20);
 
         pack();
     }
 
-    public User() {
+    // btnRegistrarse.addActionListener(new java.awt.event.ActionListener() {
+    //         public void actionPerformed(java.awt.event.ActionEvent evt) {
+    //             startRegister(evt);
+    //         }
+    //     });
+    public RegisterV(String host,int port) {
+        this.host = host;
+        this.port = port;
         initComponents();
     }
 
-    public static void ventanaRegistrarse(java.awt.event.ActionEvent evt){
+    public static void startRegister(java.awt.event.ActionEvent evt){
     	
-    	RegisterV f = new RegisterV(host,port);
-	    f.setTitle("Registro");
-	    f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-	    f.setSize(700,500);
-	    f.setVisible(true);
-	    f.setLocationRelativeTo(null);
-
-    }
-
-    public static void startLogin(java.awt.event.ActionEvent evt){
     	try{
-    		studentInfo = new DatagramSocket();
-    	}catch(Exception e){
+            studentInfo = new DatagramSocket();
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }catch(Exception e){
 
-    	}
-    	
+        }
 
-    	String studentId = txtUsuario.getText();
-    	String studentPassword = txtContra.getText();
+        String id = txtBoleta.getText();
+        String name = txtNombre.getText();
+        String parentalSurname = txtPat.getText();
+        String maternalSurname = txtMat.getText();
+        String password = txtContra.getText();
+        byte binaryPhoto[] = choosePhoto();
 
-    	//Send the students information to the server 
-        Login studentLogin = new Login(studentId, studentPassword);
-        sendLoginOrRegistration(host, port, studentLogin, studentInfo);
-        //Receive the status of the login
+
+    	Register studentRegister = new Register(id, name, parentalSurname, maternalSurname, password, binaryPhoto);
+        sendLoginOrRegistration(host, port, studentRegister, studentInfo);  
+        
         Student student = receiveStatusLogin(studentInfo);
         String statusLogin = student.getStatusLogin();
-        if((statusLogin.equalsIgnoreCase("Login Correct"))){
-            extractInfoStudent(student, studentId);
 
-            //
-            if(student.getSchedule() == null){
-                System.out.println("Choose a schedule");
-                String chosenSchedule = "";
-                modifySchedule(host, port, studentInfo, chosenSchedule);
-                Student newStudent = receiveStatusLogin(studentInfo);
-                extractInfoStudent(newStudent, studentId);
-                
+        if(statusLogin.equalsIgnoreCase("Login Correct")){
+            extractInfoStudent(student, id);
+            System.out.println("Todo Bien");
+            /*
+            String chosenSchedule = "";
+            try{
+                chosenSchedule = br.readLine();
+            }catch(Exception e){
+
             }
-            //
+            modifySchedule(host, port, studentInfo, chosenSchedule);
+            Student newStudent = receiveStatusLogin(studentInfo);
+            extractInfoStudent(newStudent, id);
+            */
         }else{
             System.out.println(statusLogin);
         }
@@ -295,9 +315,10 @@ public class User extends javax.swing.JFrame {
     }
 
     public static void main(String[] args) throws IOException{
+        /*
     	java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-            	User f = new User();
+            	RegisterV f = new RegisterV();
 		        f.setTitle("Practica 2");
 		        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		        f.setSize(700,500);
@@ -306,52 +327,8 @@ public class User extends javax.swing.JFrame {
                 //new User().setVisible(true);
             }
         });
-
-        
-        br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Enter the server address:");
-        host = br.readLine();
-        System.out.println("Enter the server port:");
-        port = Integer.parseInt(br.readLine());
-
-        System.out.println("Student Management System\n");
+        */
         /*
-        System.out.println("If you want to log in press 1, if you want to register press 2");
-        int option = Integer.parseInt(br.readLine());
-        
-        
-        if(option == 1){ //User wants to log in
-            System.out.println("Student Id: ");
-            String studentId = br.readLine();
-
-            System.out.println("Password: ");
-            String studentPassword = br.readLine();
-
-            //Send the students information to the server 
-            Login studentLogin = new Login(studentId, studentPassword);
-            sendLoginOrRegistration(host, port, studentLogin, studentInfo);
-            //Receive the status of the login
-            Student student = receiveStatusLogin(studentInfo);
-            String statusLogin = student.getStatusLogin();
-            if((statusLogin.equalsIgnoreCase("Login Correct"))){
-                extractInfoStudent(student, studentId);
-
-                //
-                if(student.getSchedule() == null){
-                    System.out.println("Choose a schedule");
-                    String chosenSchedule = br.readLine();
-                    modifySchedule(host, port, studentInfo, chosenSchedule);
-                    Student newStudent = receiveStatusLogin(studentInfo);
-                    extractInfoStudent(newStudent, studentId);
-                    
-                }
-                //
-            }else{
-                System.out.println(statusLogin);
-            }
-            
-
-        }
         else if(option == 2){ //User wants to register
             System.out.println("Enter your student id: ");
             String id = br.readLine();
@@ -386,7 +363,6 @@ public class User extends javax.swing.JFrame {
 
         }
         */
-
 
     }
 }
