@@ -25,7 +25,7 @@ public class User extends javax.swing.JFrame {
     private static int port;
     private static User prim;
 
-    public static void sendLoginOrRegistration(String host, int port ,Object student, DatagramSocket studentInfo){
+    public static void sendLoginOrRegistration(String host, int port ,Object student){
         InetAddress address = null;
         try {
             address = InetAddress.getByName(host);
@@ -48,7 +48,7 @@ public class User extends javax.swing.JFrame {
         }
     }
 
-    public static Student receiveStatusLogin(DatagramSocket studentInfo){
+    public static Student receiveStatusLogin(){
         Student student = null;
         try {
             DatagramPacket studentInfoPacket = new DatagramPacket(new byte[65535], 65535);
@@ -281,9 +281,9 @@ public class User extends javax.swing.JFrame {
 
     	//Send the students information to the server 
         Login studentLogin = new Login(studentId, studentPassword);
-        sendLoginOrRegistration(host, port, studentLogin, studentInfo);
+        sendLoginOrRegistration(host, port, studentLogin);
         //Receive the status of the login
-        Student student = receiveStatusLogin(studentInfo);
+        Student student = receiveStatusLogin();
         String statusLogin = student.getStatusLogin();
         if((statusLogin.equalsIgnoreCase("Login Correct"))){
             extractInfoStudent(student, studentId);

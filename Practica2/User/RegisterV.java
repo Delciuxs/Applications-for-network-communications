@@ -29,7 +29,7 @@ public class RegisterV extends javax.swing.JFrame {
     private static String host;
     private static int port;
 
-    public static void sendLoginOrRegistration(String host, int port ,Object student, DatagramSocket studentInfo){
+    public static void sendLoginOrRegistration(String host, int port ,Object student){
         InetAddress address = null;
         try {
             address = InetAddress.getByName(host);
@@ -52,7 +52,7 @@ public class RegisterV extends javax.swing.JFrame {
         }
     }
 
-    public static Student receiveStatusLogin(DatagramSocket studentInfo){
+    public static Student receiveStatusLogin(){
         Student student = null;
         try {
             DatagramPacket studentInfoPacket = new DatagramPacket(new byte[65535], 65535);
@@ -273,17 +273,22 @@ public class RegisterV extends javax.swing.JFrame {
         }
 
         String id = txtBoleta.getText();
+        System.out.println(id);
         String name = txtNombre.getText();
+        System.out.println(name);
         String parentalSurname = txtPat.getText();
+        System.out.println(parentalSurname);
         String maternalSurname = txtMat.getText();
+        System.out.println(maternalSurname);
         String password = txtContra.getText();
+        System.out.println(password);
         byte binaryPhoto[] = choosePhoto();
 
 
     	Register studentRegister = new Register(id, name, parentalSurname, maternalSurname, password, binaryPhoto);
-        sendLoginOrRegistration(host, port, studentRegister, studentInfo);  
+        sendLoginOrRegistration(host, port, studentRegister);  
         
-        Student student = receiveStatusLogin(studentInfo);
+        Student student = receiveStatusLogin();
         String statusLogin = student.getStatusLogin();
 
         if(statusLogin.equalsIgnoreCase("Login Correct")){
@@ -300,54 +305,6 @@ public class RegisterV extends javax.swing.JFrame {
     }
 
     public static void main(String[] args) throws IOException{
-        /*
-    	java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-            	RegisterV f = new RegisterV();
-		        f.setTitle("Practica 2");
-		        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		        f.setSize(700,500);
-		        f.setVisible(true);
-		        f.setLocationRelativeTo(null);
-                //new User().setVisible(true);
-            }
-        });
-        */
-        /*
-        else if(option == 2){ //User wants to register
-            System.out.println("Enter your student id: ");
-            String id = br.readLine();
-            System.out.println("Enter your name: ");
-            String name = br.readLine();
-            System.out.println("Enter your parental surname: ");
-            String parentalSurname = br.readLine();
-            System.out.println("Enter your maternal surname: ");
-            String maternalSurname = br.readLine();
-            System.out.println("Enter your password: ");
-            String password = br.readLine();
-            System.out.println("Choose your profile picture: ");
-            byte binaryPhoto[] = choosePhoto();
-
-
-            Register studentRegister = new Register(id, name, parentalSurname, maternalSurname, password, binaryPhoto);
-            sendLoginOrRegistration(host, port, studentRegister, studentInfo);  
-            
-            Student student = receiveStatusLogin(studentInfo);
-            String statusLogin = student.getStatusLogin();
-
-            if(statusLogin.equalsIgnoreCase("Login Correct")){
-                extractInfoStudent(student, id);
-                System.out.println("Choose a schedule");
-                String chosenSchedule = br.readLine();
-                modifySchedule(host, port, studentInfo, chosenSchedule);
-                Student newStudent = receiveStatusLogin(studentInfo);
-                extractInfoStudent(newStudent, id);
-            }else{
-                System.out.println(statusLogin);
-            }
-
-        }
-        */
 
     }
 }

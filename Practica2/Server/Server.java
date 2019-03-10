@@ -259,10 +259,15 @@ public class Server{
                 else if(o instanceof Register){//Petition for registration
                     Register studentRegister = (Register)o;
                     String idRegister = studentRegister.getId();
+                    System.out.println(idRegister);
                     String nameRegister = studentRegister.getName();
+                    System.out.println(nameRegister);
                     String parentalSurnameRegister = studentRegister.getPaternalSurname();
+                    System.out.println(parentalSurnameRegister);
                     String maternalSurnameRegister = studentRegister.getMaternalSurname();
+                    System.out.println(maternalSurnameRegister);
                     String passwordRegister = studentRegister.getPassword();
+                    System.out.println(passwordRegister);
                     byte photo[] = studentRegister.getBinaryPhoto();
 
                     if(userAuthentication.containsKey(idRegister)){
@@ -301,9 +306,9 @@ public class Server{
                         sendLoginOrRegistration(destinationAddress.getHostAddress(), port, student, s); 
 
                         //
-                        modifySchedule(s, studentInfo, idRegister);
-                        Student newStudent = constructStudentInfo(statusLogin, idRegister, allSchedules);
-                        sendLoginOrRegistration(destinationAddress.getHostAddress(), port, newStudent, s);
+                        // modifySchedule(s, studentInfo, idRegister);
+                        // Student newStudent = constructStudentInfo(statusLogin, idRegister, allSchedules);
+                        // sendLoginOrRegistration(destinationAddress.getHostAddress(), port, newStudent, s);
                         //
                        
                     }else{
