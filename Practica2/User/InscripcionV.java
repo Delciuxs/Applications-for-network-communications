@@ -142,7 +142,7 @@ public class InscripcionV extends javax.swing.JFrame {
 
     private void btnInscribirActionPerformed(java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
-        String chosenValue = String.valueOf(cmbGrupo.getSelectedIndex()+1);
+        String chosenValue = String.valueOf(cmbGrupo.getSelectedIndex());
         modifySchedule(chosenValue);
     }
 

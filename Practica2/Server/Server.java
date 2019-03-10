@@ -247,12 +247,12 @@ public class Server{
                     sendLoginOrRegistration(destinationAddress.getHostAddress(), port, student, s); 
 
                     //
-                    if((student.getSchedule() == null) && statusLogin.equalsIgnoreCase("Login Correct")){
-                        System.out.println("Sending a user without schedule, waiting for new schedule");
-                        modifySchedule(s, studentInfo, idStudent);
-                        Student newStudent = constructStudentInfo(statusLogin, idStudent, allSchedules);
-                        sendLoginOrRegistration(destinationAddress.getHostAddress(), port, newStudent, s);
-                    }
+                    // if((student.getSchedule() == null) && statusLogin.equalsIgnoreCase("Login Correct")){
+                    //     System.out.println("Sending a user without schedule, waiting for new schedule");
+                    //     modifySchedule(s, studentInfo, idStudent);
+                    //     Student newStudent = constructStudentInfo(statusLogin, idStudent, allSchedules);
+                    //     sendLoginOrRegistration(destinationAddress.getHostAddress(), port, newStudent, s);
+                    // }
                     //
                     
                 }
