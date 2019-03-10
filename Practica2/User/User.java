@@ -23,6 +23,7 @@ public class User extends javax.swing.JFrame {
     private static BufferedReader br;
     private static String host;
     private static int port;
+    private static User prim;
 
     public static void sendLoginOrRegistration(String host, int port ,Object student, DatagramSocket studentInfo){
         InetAddress address = null;
@@ -256,6 +257,17 @@ public class User extends javax.swing.JFrame {
 
     }
 
+    public static void ventanaInicio(Student s){
+        
+        InicioV f = new InicioV(host,port,s);
+        f.setTitle("Inicio");
+        f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        f.setSize(700,500);
+        f.setVisible(true);
+        f.setLocationRelativeTo(null);
+
+    }
+
     public static void startLogin(java.awt.event.ActionEvent evt){
     	try{
     		studentInfo = new DatagramSocket();
@@ -275,8 +287,8 @@ public class User extends javax.swing.JFrame {
         String statusLogin = student.getStatusLogin();
         if((statusLogin.equalsIgnoreCase("Login Correct"))){
             extractInfoStudent(student, studentId);
-
-            //
+            ventanaInicio(student);
+            /*
             if(student.getSchedule() == null){
                 System.out.println("Choose a schedule");
                 String chosenSchedule = "";
@@ -285,24 +297,24 @@ public class User extends javax.swing.JFrame {
                 extractInfoStudent(newStudent, studentId);
                 
             }
-            //
+            */
         }else{
             System.out.println(statusLogin);
         }
-
         studentInfo.close();
-
+        prim.setVisible(false); //you can't see me!
+        prim.dispose(); //Destroy the JFrame object
     }
 
     public static void main(String[] args) throws IOException{
     	java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-            	User f = new User();
-		        f.setTitle("Practica 2");
-		        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		        f.setSize(700,500);
-		        f.setVisible(true);
-		        f.setLocationRelativeTo(null);
+            	prim = new User();
+		        prim.setTitle("Practica 2");
+		        prim.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		        prim.setSize(700,500);
+		        prim.setVisible(true);
+		        prim.setLocationRelativeTo(null);
                 //new User().setVisible(true);
             }
         });

@@ -9,25 +9,18 @@ import java.io.*;
 import java.util.HashSet;
 import org.xml.sax.Attributes;
 
-public class RegisterV extends javax.swing.JFrame {
+public class InicioV extends javax.swing.JFrame {
 
-	private static JButton btnRegistrarse;
-    private static JLabel lBoleta;
-    private static JLabel lContra;
-    private static JLabel lMat;
-    private static JLabel lNombre;
-    private static JLabel lPat;
-    private static JLabel lRegistro;
-    private static JTextField txtBoleta;
-    private static JTextField txtContra;
-    private static JTextField txtMat;
-    private static JTextField txtNombre;
-    private static JTextField txtPat;
+	private static JButton btnCalificaciones;
+    private static JButton btnHorario;
+    private static JButton btnInscripcion;
+    private static JLabel lBienvenido;
 
     private static DatagramSocket studentInfo;
     private static BufferedReader br;
     private static String host;
     private static int port;
+    private static Student s;
 
     public static void sendLoginOrRegistration(String host, int port ,Object student, DatagramSocket studentInfo){
         InetAddress address = null;
@@ -195,159 +188,105 @@ public class RegisterV extends javax.swing.JFrame {
 
     private void initComponents() {
 
-        lRegistro = new javax.swing.JLabel();
-        lNombre = new javax.swing.JLabel();
-        lPat = new javax.swing.JLabel();
-        lBoleta = new javax.swing.JLabel();
-        lMat = new javax.swing.JLabel();
-        lContra = new javax.swing.JLabel();
-        btnRegistrarse = new javax.swing.JButton();
-        txtBoleta = new javax.swing.JTextField();
-        txtNombre = new javax.swing.JTextField();
-        txtPat = new javax.swing.JTextField();
-        txtMat = new javax.swing.JTextField();
-        txtContra = new javax.swing.JTextField();
+        lBienvenido = new javax.swing.JLabel();
+        btnInscripcion = new javax.swing.JButton();
+        btnHorario = new javax.swing.JButton();
+        btnCalificaciones = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
-        lRegistro.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        lRegistro.setText("Registro");
-        getContentPane().add(lRegistro);
-        lRegistro.setBounds(219, 32, 97, 29);
+        lBienvenido.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        lBienvenido.setText("Bienvenido!");
+        getContentPane().add(lBienvenido);
+        lBienvenido.setBounds(58, 62, 137, 29);
 
-        lNombre.setText("Nombre:");
-        getContentPane().add(lNombre);
-        lNombre.setBounds(160, 135, 60, 14);
-
-        lPat.setText("Apellido paterno:");
-        getContentPane().add(lPat);
-        lPat.setBounds(119, 170, 100, 14);
-
-        lBoleta.setText("Boleta:");
-        getContentPane().add(lBoleta);
-        lBoleta.setBounds(167, 100, 50, 14);
-
-        lMat.setText("Apellido materno:");
-        getContentPane().add(lMat);
-        lMat.setBounds(117, 202, 100, 14);
-
-        lContra.setText("Contrasena:");
-        getContentPane().add(lContra);
-        lContra.setBounds(141, 237, 70, 14);
-
-        btnRegistrarse.setText("Registrarse");
-        btnRegistrarse.addActionListener(new java.awt.event.ActionListener() {
+        btnInscripcion.setText("Inscripcion");
+        btnInscripcion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startRegister(evt);
+                btnInscripcionActionPerformed(evt);
             }
         });
-        getContentPane().add(btnRegistrarse);
-        btnRegistrarse.setBounds(229, 271, 120, 23);
-        getContentPane().add(txtBoleta);
-        txtBoleta.setBounds(229, 94, 100, 20);
-        getContentPane().add(txtNombre);
-        txtNombre.setBounds(229, 132, 100, 20);
-        getContentPane().add(txtPat);
-        txtPat.setBounds(229, 164, 100, 20);
-        getContentPane().add(txtMat);
-        txtMat.setBounds(229, 196, 100, 20);
-        getContentPane().add(txtContra);
-        txtContra.setBounds(229, 234, 100, 20);
+        getContentPane().add(btnInscripcion);
+        btnInscripcion.setBounds(30, 190, 130, 23);
+
+        btnHorario.setText("Horario");
+        btnHorario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHorarioActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnHorario);
+        btnHorario.setBounds(180, 190, 130, 23);
+
+        btnCalificaciones.setText("Calficaciones");
+        btnCalificaciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalificacionesActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnCalificaciones);
+        btnCalificaciones.setBounds(340, 190, 130, 23);
 
         pack();
     }
 
-    public RegisterV(String host,int port) {
+    private void btnInscripcionActionPerformed(java.awt.event.ActionEvent evt) {                                               
+        // TODO add your handling code here:
+        // setVisible(false); //you can't see me!
+        // dispose(); //Destroy the JFrame object
+        if(s.getSchedule() != null){
+            JOptionPane.showMessageDialog(null, "Inscripcion completa");
+        }
+        else{
+            //Mandamos a elegir horario
+            // InicioV f = new InicioV(host,port);
+            // f.setTitle("Inicio");
+            // f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            // f.setSize(700,500);
+            // f.setVisible(true);
+            // f.setLocationRelativeTo(null);
+        }
+       
+    }                                              
+
+    private void btnHorarioActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        if(s.getSchedule() == null){
+            JOptionPane.showMessageDialog(null, "No tienes horario. Termina tu Inscripcion");
+        }
+        else{
+            //Mandamos a elegir horario
+            // InicioV f = new InicioV(host,port);
+            // f.setTitle("Inicio");
+            // f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            // f.setSize(700,500);
+            // f.setVisible(true);
+            // f.setLocationRelativeTo(null);
+        }
+    }                                          
+
+    private void btnCalificacionesActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+        if(s.getSchedule() == null){
+            JOptionPane.showMessageDialog(null, "No tienes horario. Termina tu Inscripcion");
+        }
+        else{
+            //Mandamos a elegir horario
+            // InicioV f = new InicioV(host,port);
+            // f.setTitle("Inicio");
+            // f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            // f.setSize(700,500);
+            // f.setVisible(true);
+            // f.setLocationRelativeTo(null);
+        }
+    }
+
+    public InicioV(String host,int port,Student s) {
         this.host = host;
         this.port = port;
+        this.s = s;
         initComponents();
     }
 
-    public static void startRegister(java.awt.event.ActionEvent evt){
-    	
-    	try{
-            studentInfo = new DatagramSocket();
-        }catch(Exception e){
-
-        }
-
-        String id = txtBoleta.getText();
-        String name = txtNombre.getText();
-        String parentalSurname = txtPat.getText();
-        String maternalSurname = txtMat.getText();
-        String password = txtContra.getText();
-        byte binaryPhoto[] = choosePhoto();
-
-
-    	Register studentRegister = new Register(id, name, parentalSurname, maternalSurname, password, binaryPhoto);
-        sendLoginOrRegistration(host, port, studentRegister, studentInfo);  
-        
-        Student student = receiveStatusLogin(studentInfo);
-        String statusLogin = student.getStatusLogin();
-
-        if(statusLogin.equalsIgnoreCase("Login Correct")){
-            extractInfoStudent(student, id);
-            System.out.println("Todo Bien");
-            JOptionPane.showMessageDialog(null, "Registro exitoso");
-        }else{
-            JOptionPane.showMessageDialog(null, statusLogin);
-            System.out.println(statusLogin);
-        }
-
-        studentInfo.close();
-
-    }
-
     public static void main(String[] args) throws IOException{
-        /*
-    	java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-            	RegisterV f = new RegisterV();
-		        f.setTitle("Practica 2");
-		        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		        f.setSize(700,500);
-		        f.setVisible(true);
-		        f.setLocationRelativeTo(null);
-                //new User().setVisible(true);
-            }
-        });
-        */
-        /*
-        else if(option == 2){ //User wants to register
-            System.out.println("Enter your student id: ");
-            String id = br.readLine();
-            System.out.println("Enter your name: ");
-            String name = br.readLine();
-            System.out.println("Enter your parental surname: ");
-            String parentalSurname = br.readLine();
-            System.out.println("Enter your maternal surname: ");
-            String maternalSurname = br.readLine();
-            System.out.println("Enter your password: ");
-            String password = br.readLine();
-            System.out.println("Choose your profile picture: ");
-            byte binaryPhoto[] = choosePhoto();
-
-
-            Register studentRegister = new Register(id, name, parentalSurname, maternalSurname, password, binaryPhoto);
-            sendLoginOrRegistration(host, port, studentRegister, studentInfo);  
-            
-            Student student = receiveStatusLogin(studentInfo);
-            String statusLogin = student.getStatusLogin();
-
-            if(statusLogin.equalsIgnoreCase("Login Correct")){
-                extractInfoStudent(student, id);
-                System.out.println("Choose a schedule");
-                String chosenSchedule = br.readLine();
-                modifySchedule(host, port, studentInfo, chosenSchedule);
-                Student newStudent = receiveStatusLogin(studentInfo);
-                extractInfoStudent(newStudent, id);
-            }else{
-                System.out.println(statusLogin);
-            }
-
-        }
-        */
-
     }
 }
