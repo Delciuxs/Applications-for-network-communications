@@ -22,7 +22,7 @@ public class InscripcionV extends javax.swing.JFrame {
     private static BufferedReader br;
     private static String host;
     private static int port;
-    private static Student s;
+    private static String studentId;
 
 
     public static void printAllSchedules(ArrayList<ArrayList<ArrayList<String>>> allSchedules){
@@ -146,10 +146,10 @@ public class InscripcionV extends javax.swing.JFrame {
         modifySchedule(chosenValue);
     }
 
-    public InscripcionV(String host,int port,Student s) {
+    public InscripcionV(String host,int port,String studentId) {
         this.host = host;
         this.port = port;
-        this.s = s;
+        this.studentId = studentId;
         initComponents();
     }
 

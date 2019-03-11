@@ -194,6 +194,7 @@ public class Server{
 
     public static void main(String[] args) {
         Map<String, String> userAuthentication = new HashMap<String, String>();
+        Map<String, Student> estudiantes = new HashMap<String, Student>();
         ArrayList<ArrayList<ArrayList<String>>> allSchedules = schedules();
         // printAllSchedules();   
 
@@ -227,6 +228,7 @@ public class Server{
                 ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(studentInfo.getData()));
                 Object o = ois.readObject();
                 String statusLogin = "";
+
                 if(o instanceof Login){//Petition for login
                     Login studentLogin = (Login)o;
                     String idStudent = studentLogin.getStudentId();
@@ -246,13 +248,27 @@ public class Server{
                     Student student = constructStudentInfo(statusLogin, idStudent, allSchedules);
                     sendLoginOrRegistration(destinationAddress.getHostAddress(), port, student, s); 
 
+
+                    /*
+                        Aqui tu obligas a un usuario que ya esta registrado y que no tiene horario, a tener que escoger uno.
+                        Asi que cuando entro a la ventana de Inicio y le doy al boton de inscripcion y despues elijo uno de los dos horarios
+                        no hay problema, por que el servidor sigue escuchando y lo que espera es un numero.
+
+                        Pero, si yo quisiera hacer alguna accion diferente antes de inscribir mi horario, como checar mis calificaciones o ver
+                        mi horario actual(que deberian de mostrar un error), no se podria ya que el servidor sigue escuchando y esta esperando
+                        algo que no le llegara.
+                        
+                    */
+
+
+
                     //
-                    // if((student.getSchedule() == null) && statusLogin.equalsIgnoreCase("Login Correct")){
-                    //     System.out.println("Sending a user without schedule, waiting for new schedule");
-                    //     modifySchedule(s, studentInfo, idStudent);
-                    //     Student newStudent = constructStudentInfo(statusLogin, idStudent, allSchedules);
-                    //     sendLoginOrRegistration(destinationAddress.getHostAddress(), port, newStudent, s);
-                    // }
+                    if((student.getSchedule() == null) && statusLogin.equalsIgnoreCase("Login Correct")){
+                        System.out.println("Sending a user without schedule, waiting for new schedule");
+                        modifySchedule(s, studentInfo, idStudent);
+                        Student newStudent = constructStudentInfo(statusLogin, idStudent, allSchedules);
+                        sendLoginOrRegistration(destinationAddress.getHostAddress(), port, newStudent, s);
+                    }
                     //
                     
                 }
@@ -316,6 +332,12 @@ public class Server{
                         sendLoginOrRegistration(destinationAddress.getHostAddress(), port, student, s); 
                         System.out.println(statusLogin);
                     }
+                }
+                else if(o instanceof String){
+                    String idStudent = (String)o;
+                    //Caso en el que solo quiera devuelta a mi usuario
+                    Student student = constructStudentInfo("Login Correct", idStudent, allSchedules);
+                    sendLoginOrRegistration(destinationAddress.getHostAddress(), port, student, s);
                 }
                 
                 ois.close();

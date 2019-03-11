@@ -257,9 +257,9 @@ public class User extends javax.swing.JFrame {
 
     }
 
-    public static void ventanaInicio(Student s){
+    public static void ventanaInicio(String studentId){
         
-        InicioV f = new InicioV(host,port,s);
+        InicioV f = new InicioV(host,port,studentId);
         f.setTitle("Inicio");
         f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         f.setSize(700,500);
@@ -282,12 +282,16 @@ public class User extends javax.swing.JFrame {
     	//Send the students information to the server 
         Login studentLogin = new Login(studentId, studentPassword);
         sendLoginOrRegistration(host, port, studentLogin);
+        
         //Receive the status of the login
         Student student = receiveStatusLogin();
         String statusLogin = student.getStatusLogin();
+        
         if((statusLogin.equalsIgnoreCase("Login Correct"))){
             extractInfoStudent(student, studentId);
-            ventanaInicio(student);
+            ventanaInicio(studentId);
+            prim.setVisible(false); //you can't see me!
+            prim.dispose(); //Destroy the JFrame object
             /*
             if(student.getSchedule() == null){
                 System.out.println("Choose a schedule");
@@ -302,8 +306,7 @@ public class User extends javax.swing.JFrame {
             System.out.println(statusLogin);
         }
         studentInfo.close();
-        prim.setVisible(false); //you can't see me!
-        prim.dispose(); //Destroy the JFrame object
+        
     }
 
     public static void main(String[] args) throws IOException{

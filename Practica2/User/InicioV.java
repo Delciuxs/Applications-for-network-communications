@@ -20,26 +20,75 @@ public class InicioV extends javax.swing.JFrame {
     private static BufferedReader br;
     private static String host;
     private static int port;
-    private static Student s;
+    private static String studentId;
+    private static boolean bandera;
 
-    public static void printSchedule(ArrayList<ArrayList<String>> schedule){
-        
-        for(int i = 0; i < schedule.size(); i++){
-            for(int j = 0; j < schedule.get(0).size(); j++){
-                System.out.print(schedule.get(i).get(j) + ",");
-            }
-            System.out.println("");
+    public static void sendLoginOrRegistration(String host, int port ,Object student){
+        InetAddress address = null;
+        try {
+            address = InetAddress.getByName(host);
+        } catch (UnknownHostException u) {
+            System.out.println("Address is not valid");
+            System.exit(1);
+        }
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(student);
+            oos.flush();
+            byte []byteStudentInfo = baos.toByteArray();
+            DatagramPacket dataPacket = new DatagramPacket(byteStudentInfo, byteStudentInfo.length, address, port);
+            studentInfo.send(dataPacket);
+            oos.close();
+            baos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public static void printRankings(ArrayList<ArrayList<String>> rankings){
+    public static Student receiveStatusLogin(){
+        Student student = null;
+        try {
+            DatagramPacket studentInfoPacket = new DatagramPacket(new byte[65535], 65535);
+            studentInfo.receive(studentInfoPacket);
+            InetAddress destinationAddress = studentInfoPacket.getAddress();
+            int port = studentInfoPacket.getPort();
+            System.out.println("Datagram received from " + destinationAddress + " : " + port);
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(studentInfoPacket.getData()));
+            student = (Student)ois.readObject();
+            ois.close();
+
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return student;
         
+    }
+
+    public static String getScheduleMesssage(ArrayList<ArrayList<String>> schedule){
+        String message = "";
+        for(int i = 0; i < schedule.size(); i++){
+            for(int j = 0; j < schedule.get(0).size(); j++){
+                System.out.print(schedule.get(i).get(j) + ",");
+                message+=(schedule.get(i).get(j) + ",");
+            }
+            System.out.println("");
+            message+="\n";
+        }
+        return message;
+    }
+
+    public static String getRankingsMessage(ArrayList<ArrayList<String>> rankings){
+        String message = "";
         for(int i = 0; i < rankings.size(); i++){
             for(int j = 0; j < rankings.get(0).size(); j++){
                 System.out.print(rankings.get(i).get(j) + ",");
+                message+=(rankings.get(i).get(j) + ",");
             }
             System.out.println("");
         }
+        return message;
     }
     /*
     public static void extractInfoStudent(Student student, String studentId){
@@ -120,26 +169,63 @@ public class InicioV extends javax.swing.JFrame {
         // TODO add your handling code here:
         // setVisible(false); //you can't see me!
         // dispose(); //Destroy the JFrame object
-        if(s.getSchedule() != null){
-            JOptionPane.showMessageDialog(null, "Inscripcion completa");
-        }
-        else{
+
+        
+        if(bandera){
+            bandera=false;
             //Mandamos a elegir horario
-            InscripcionV f = new InscripcionV(host,port,s);
+            InscripcionV f = new InscripcionV(host,port,studentId);
             f.setTitle("Inscripcion");
             f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             f.setSize(700,500);
             f.setVisible(true);
             f.setLocationRelativeTo(null);
         }
+        else{
+            try{
+                studentInfo = new DatagramSocket();
+            }catch(Exception e){
+
+            }
+
+            sendLoginOrRegistration(host, port, studentId);
+            //Receive the status of the login
+            Student student = receiveStatusLogin();
+            studentInfo.close();
+            if(student.getSchedule() != null){
+            JOptionPane.showMessageDialog(null, "Inscripcion completa");
+            }
+            else{
+                //Mandamos a elegir horario
+                InscripcionV f = new InscripcionV(host,port,studentId);
+                f.setTitle("Inscripcion");
+                f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                f.setSize(700,500);
+                f.setVisible(true);
+                f.setLocationRelativeTo(null);
+            }
+        }
+        
        
     }                                              
 
-    private void btnHorarioActionPerformed(java.awt.event.ActionEvent evt) {                                           
-        if(s.getSchedule() == null){
+    private void btnHorarioActionPerformed(java.awt.event.ActionEvent evt) {
+        //Si queremos ver nuestro horario primero debemos jalar a nuestro estudiante si es que hubo modificacion
+        try{
+            studentInfo = new DatagramSocket();
+        }catch(Exception e){
+
+        }
+
+        sendLoginOrRegistration(host, port, studentId);
+        //Receive the status of the login
+        Student student = receiveStatusLogin();
+        studentInfo.close();
+        if(student.getSchedule() == null){
             JOptionPane.showMessageDialog(null, "No tienes horario. Termina tu Inscripcion");
         }
         else{
+            JOptionPane.showMessageDialog(null, getScheduleMesssage(student.getSchedule()));
             //Mandamos a elegir horario
             // InicioV f = new InicioV(host,port);
             // f.setTitle("Inicio");
@@ -150,11 +236,21 @@ public class InicioV extends javax.swing.JFrame {
         }
     }                                          
 
-    private void btnCalificacionesActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-        if(s.getSchedule() == null){
+    private void btnCalificacionesActionPerformed(java.awt.event.ActionEvent evt) {
+        try{
+            studentInfo = new DatagramSocket();
+        }catch(Exception e){
+
+        }
+        sendLoginOrRegistration(host, port, studentId);
+        //Receive the status of the login
+        Student student = receiveStatusLogin();
+        studentInfo.close();                                            
+        if(student.getSchedule() == null){
             JOptionPane.showMessageDialog(null, "No tienes horario. Termina tu Inscripcion");
         }
         else{
+            JOptionPane.showMessageDialog(null, getRankingsMessage(student.getRankings()));
             //Mandamos a elegir horario
             // InicioV f = new InicioV(host,port);
             // f.setTitle("Inicio");
@@ -165,10 +261,11 @@ public class InicioV extends javax.swing.JFrame {
         }
     }
 
-    public InicioV(String host,int port,Student s) {
+    public InicioV(String host,int port,String studentId) {
         this.host = host;
         this.port = port;
-        this.s = s;
+        this.studentId = studentId;
+        this.bandera=true;
         initComponents();
     }
 
