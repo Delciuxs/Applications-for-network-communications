@@ -134,6 +134,7 @@ public class Server{
                 student.setAllSchedules(allSchedules);
             }
             if(!scheduleNumber.equalsIgnoreCase("-1")){
+                student.setAllSchedules(allSchedules);
                 student.setSchedule(allSchedules.get(Integer.parseInt(scheduleNumber)));
                 ArrayList<ArrayList<String>> rankings = new ArrayList<ArrayList<String>>();
                 ArrayList<String> ranks = new ArrayList<String>();

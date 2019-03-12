@@ -257,11 +257,11 @@ public class User extends javax.swing.JFrame {
 
     }
 
-    public static void ventanaInicio(String studentId){
+    public static void ventanaInicio(String studentId,ArrayList<ArrayList<ArrayList<String>>> allSchedules,boolean esNuevo){
         
-        InicioV f = new InicioV(host,port,studentId);
+        InicioV f = new InicioV(host,port,studentId, allSchedules,esNuevo);
         f.setTitle("Inicio");
-        f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(700,500);
         f.setVisible(true);
         f.setLocationRelativeTo(null);
@@ -289,7 +289,12 @@ public class User extends javax.swing.JFrame {
         
         if((statusLogin.equalsIgnoreCase("Login Correct"))){
             extractInfoStudent(student, studentId);
-            ventanaInicio(studentId);
+            //Tambien le mandamos todos los horarios
+            printAllSchedules(student.getAllSchedules());
+            boolean esNuevo=false;
+            if(student.getSchedule() == null)
+                esNuevo = true;
+            ventanaInicio(studentId,student.getAllSchedules(),esNuevo);
             prim.setVisible(false); //you can't see me!
             prim.dispose(); //Destroy the JFrame object
             /*

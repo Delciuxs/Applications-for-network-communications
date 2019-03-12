@@ -15,6 +15,7 @@ public class InicioV extends javax.swing.JFrame {
     private static JButton btnHorario;
     private static JButton btnInscripcion;
     private static JLabel lBienvenido;
+    private static JLabel lFoto;
 
     private static DatagramSocket studentInfo;
     private static BufferedReader br;
@@ -22,6 +23,9 @@ public class InicioV extends javax.swing.JFrame {
     private static int port;
     private static String studentId;
     private static boolean bandera;
+    private static ArrayList<ArrayList<ArrayList<String>>> horarios;
+    private static Student studentPrincipal;
+    private static boolean esNuevo;
 
     public static void sendLoginOrRegistration(String host, int port ,Object student){
         InetAddress address = null;
@@ -123,6 +127,7 @@ public class InicioV extends javax.swing.JFrame {
     private void initComponents() {
 
         lBienvenido = new javax.swing.JLabel();
+        lFoto = new javax.swing.JLabel();
         btnInscripcion = new javax.swing.JButton();
         btnHorario = new javax.swing.JButton();
         btnCalificaciones = new javax.swing.JButton();
@@ -134,6 +139,12 @@ public class InicioV extends javax.swing.JFrame {
         lBienvenido.setText("Bienvenido!");
         getContentPane().add(lBienvenido);
         lBienvenido.setBounds(58, 62, 137, 29);
+
+        //Ponemos una foto
+        ImageIcon img = new ImageIcon(studentId+".png");
+        lFoto.setIcon(img);
+        getContentPane().add(lFoto);
+        lFoto.setBounds(300, 32, 150, 150);
 
         btnInscripcion.setText("Inscripcion");
         btnInscripcion.addActionListener(new java.awt.event.ActionListener() {
@@ -171,10 +182,10 @@ public class InicioV extends javax.swing.JFrame {
         // dispose(); //Destroy the JFrame object
 
         
-        if(bandera){
-            bandera=false;
+        if(esNuevo){
+            esNuevo=false;
             //Mandamos a elegir horario
-            InscripcionV f = new InscripcionV(host,port,studentId);
+            InscripcionV f = new InscripcionV(host,port,studentId,horarios);
             f.setTitle("Inscripcion");
             f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             f.setSize(700,500);
@@ -190,14 +201,14 @@ public class InicioV extends javax.swing.JFrame {
 
             sendLoginOrRegistration(host, port, studentId);
             //Receive the status of the login
-            Student student = receiveStatusLogin();
+            studentPrincipal = receiveStatusLogin();
             studentInfo.close();
-            if(student.getSchedule() != null){
+            if(studentPrincipal.getSchedule() != null){
             JOptionPane.showMessageDialog(null, "Inscripcion completa");
             }
             else{
                 //Mandamos a elegir horario
-                InscripcionV f = new InscripcionV(host,port,studentId);
+                InscripcionV f = new InscripcionV(host,port,studentId,horarios);
                 f.setTitle("Inscripcion");
                 f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                 f.setSize(700,500);
@@ -210,62 +221,76 @@ public class InicioV extends javax.swing.JFrame {
     }                                              
 
     private void btnHorarioActionPerformed(java.awt.event.ActionEvent evt) {
-        //Si queremos ver nuestro horario primero debemos jalar a nuestro estudiante si es que hubo modificacion
-        try{
-            studentInfo = new DatagramSocket();
-        }catch(Exception e){
-
-        }
-
-        sendLoginOrRegistration(host, port, studentId);
-        //Receive the status of the login
-        Student student = receiveStatusLogin();
-        studentInfo.close();
-        if(student.getSchedule() == null){
+        if(esNuevo){
             JOptionPane.showMessageDialog(null, "No tienes horario. Termina tu Inscripcion");
         }
         else{
-            JOptionPane.showMessageDialog(null, getScheduleMesssage(student.getSchedule()));
-            //Mandamos a elegir horario
-            // InicioV f = new InicioV(host,port);
-            // f.setTitle("Inicio");
-            // f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            // f.setSize(700,500);
-            // f.setVisible(true);
-            // f.setLocationRelativeTo(null);
+            //Si queremos ver nuestro horario primero debemos jalar a nuestro estudiante si es que hubo modificacion
+            try{
+                studentInfo = new DatagramSocket();
+            }catch(Exception e){
+
+            }
+
+            sendLoginOrRegistration(host, port, studentId);
+            //Receive the status of the login
+            studentPrincipal = receiveStatusLogin();
+            studentInfo.close();
+            if(studentPrincipal.getSchedule() == null){
+                JOptionPane.showMessageDialog(null, "No tienes horario. Termina tu Inscripcion");
+            }
+            else{
+                JOptionPane.showMessageDialog(null, getScheduleMesssage(studentPrincipal.getSchedule()));
+                //Mandamos a elegir horario
+                // InicioV f = new InicioV(host,port);
+                // f.setTitle("Inicio");
+                // f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                // f.setSize(700,500);
+                // f.setVisible(true);
+                // f.setLocationRelativeTo(null);
+            }
         }
+        
     }                                          
 
     private void btnCalificacionesActionPerformed(java.awt.event.ActionEvent evt) {
-        try{
-            studentInfo = new DatagramSocket();
-        }catch(Exception e){
-
-        }
-        sendLoginOrRegistration(host, port, studentId);
-        //Receive the status of the login
-        Student student = receiveStatusLogin();
-        studentInfo.close();                                            
-        if(student.getSchedule() == null){
-            JOptionPane.showMessageDialog(null, "No tienes horario. Termina tu Inscripcion");
+        if(esNuevo){
+            JOptionPane.showMessageDialog(null, "No tienes calficaciones. Termina tu Inscripcion");
         }
         else{
-            JOptionPane.showMessageDialog(null, getRankingsMessage(student.getRankings()));
-            //Mandamos a elegir horario
-            // InicioV f = new InicioV(host,port);
-            // f.setTitle("Inicio");
-            // f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            // f.setSize(700,500);
-            // f.setVisible(true);
-            // f.setLocationRelativeTo(null);
+            try{
+                studentInfo = new DatagramSocket();
+            }catch(Exception e){
+
+            }
+            sendLoginOrRegistration(host, port, studentId);
+            //Receive the status of the login
+            studentPrincipal = receiveStatusLogin();
+            studentInfo.close();                                            
+            if(studentPrincipal.getSchedule() == null){
+                JOptionPane.showMessageDialog(null, "No tienes calficaciones. Termina tu Inscripcion");
+            }
+            else{
+                JOptionPane.showMessageDialog(null, getRankingsMessage(studentPrincipal.getRankings()));
+                //Mandamos a elegir horario
+                // InicioV f = new InicioV(host,port);
+                // f.setTitle("Inicio");
+                // f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                // f.setSize(700,500);
+                // f.setVisible(true);
+                // f.setLocationRelativeTo(null);
+            }
         }
+        
     }
 
-    public InicioV(String host,int port,String studentId) {
+    public InicioV(String host,int port,String studentId,ArrayList<ArrayList<ArrayList<String>>> allSchedules,boolean esNuevo) {
         this.host = host;
         this.port = port;
         this.studentId = studentId;
         this.bandera=true;
+        this.horarios = allSchedules;
+        this.esNuevo = esNuevo;
         initComponents();
     }
 

@@ -12,6 +12,7 @@ import org.xml.sax.Attributes;
 public class RegisterV extends javax.swing.JFrame {
 
 	private static JButton btnRegistrarse;
+    private static JButton btnFoto;
     private static JLabel lBoleta;
     private static JLabel lContra;
     private static JLabel lMat;
@@ -28,6 +29,7 @@ public class RegisterV extends javax.swing.JFrame {
     private static BufferedReader br;
     private static String host;
     private static int port;
+    private static byte binaryPhoto[];
 
     public static void sendLoginOrRegistration(String host, int port ,Object student){
         InetAddress address = null;
@@ -74,7 +76,7 @@ public class RegisterV extends javax.swing.JFrame {
 
 
 
-    public static byte[] choosePhoto(){
+    public static byte[] choosePhoto(java.awt.event.ActionEvent evt){
         byte []binaryPhoto = new byte[50000];
         byte []auxImage = null;
         try {
@@ -202,6 +204,7 @@ public class RegisterV extends javax.swing.JFrame {
         lMat = new javax.swing.JLabel();
         lContra = new javax.swing.JLabel();
         btnRegistrarse = new javax.swing.JButton();
+        btnFoto = new javax.swing.JButton();
         txtBoleta = new javax.swing.JTextField();
         txtNombre = new javax.swing.JTextField();
         txtPat = new javax.swing.JTextField();
@@ -244,6 +247,19 @@ public class RegisterV extends javax.swing.JFrame {
         });
         getContentPane().add(btnRegistrarse);
         btnRegistrarse.setBounds(229, 271, 120, 23);
+
+
+        btnFoto.setText("Foto");
+        btnFoto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                binaryPhoto = choosePhoto(evt);
+            }
+        });
+        getContentPane().add(btnFoto);
+        btnFoto.setBounds(349, 221, 120, 23);
+
+
+
         getContentPane().add(txtBoleta);
         txtBoleta.setBounds(229, 94, 100, 20);
         getContentPane().add(txtNombre);
@@ -282,7 +298,7 @@ public class RegisterV extends javax.swing.JFrame {
         System.out.println(maternalSurname);
         String password = txtContra.getText();
         System.out.println(password);
-        byte binaryPhoto[] = choosePhoto();
+        //byte binaryPhoto[] = choosePhoto();
 
 
     	Register studentRegister = new Register(id, name, parentalSurname, maternalSurname, password, binaryPhoto);
