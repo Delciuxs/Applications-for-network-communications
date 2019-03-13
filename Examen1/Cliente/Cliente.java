@@ -26,7 +26,7 @@ public class Cliente extends JFrame implements ActionListener {
     static DataOutputStream outputSocket;
     static DataInputStream inputSocket;
 
-    public static void anadirElemento(String file_name,int isDirectory){
+    public static void addElement(String file_name,int isDirectory){
         if(isDirectory == 1){
             vector.addElement(file_name);
             directories.add(file_name);
@@ -34,7 +34,7 @@ public class Cliente extends JFrame implements ActionListener {
     }
 
     // Funcion abrir carpetas del servidor en el cliente
-    public static void navigate(int indice,String last_folder){
+    public static void updatePosts(){
         try {
 
             cl = new Socket(serverAddress, 1234);
@@ -46,7 +46,7 @@ public class Cliente extends JFrame implements ActionListener {
             outputSocket.flush();
 
             //Enviamos el indice en donde se encuentra la carpeta dentro del arreglo de Files[]
-            outputSocket.writeInt(indice);
+            outputSocket.writeInt(-1);
             outputSocket.flush();
 
             int n = inputSocket.readInt();
@@ -55,8 +55,8 @@ public class Cliente extends JFrame implements ActionListener {
                 int isDirectory = inputSocket.readInt();//1 carpeta y 0 archivo
                 String file_name = inputSocket.readUTF();
 
-                anadirElemento(last_folder+file_name,isDirectory);
-                System.out.println("Recibimos al archivo " + last_folder +file_name);
+                addElement(file_name,isDirectory);
+                System.out.println("Recibimos al archivo " + file_name);
                 //Aqui se crea el elemento 
                 if(isDirectory == 1)
                     System.out.println("Es un directorio ");
@@ -72,6 +72,50 @@ public class Cliente extends JFrame implements ActionListener {
             e.printStackTrace();
         }
     }
+
+
+
+
+    //FUNCION PARA LEER VALORES QUE LE MANDA POR CADA PUBLICACION
+    public static void openPost(int index){
+        try {
+
+            cl = new Socket(serverAddress, 1234);
+            outputSocket = new DataOutputStream(cl.getOutputStream());
+            inputSocket = new DataInputStream(cl.getInputStream());
+            
+            //Enviamos la opcion elegida, en este caso es la de ver publicacion.
+            outputSocket.writeUTF("3");
+            outputSocket.flush();
+
+            //Enviamos el indice en donde se encuentra la carpeta dentro del arreglo de Files[]
+            outputSocket.writeInt(index);
+            outputSocket.flush();
+
+            //Leemos el contenido
+            String content = inputSocket.readUTF();
+            //Leemos la ruta de la imagen
+            String imagePath = inputSocket.readUTF();
+            //Leemos la cantidad de comentarios
+            int n = inputSocket.readInt();
+
+            //Leemos n comentarios
+            for(int i = 0; i < n; i++) {
+                String user_c = inputSocket.readUTF();
+                String comment = inputSocket.readUTF();
+            
+            }
+            //Despues de que tengamos todos creamos una ventana y mostramos la publicacion.
+
+            inputSocket.close();
+            outputSocket.close();
+            cl.close();
+
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // Funcion descargar
     public static void iniciarDescarga(){
@@ -122,27 +166,23 @@ public class Cliente extends JFrame implements ActionListener {
         }
     }
     //Inicia la subida de archivos
-    void iniciarSubida(){
+    void uploadPost(){
         try{
             cl = new Socket(serverAddress, 1234);
             outputSocket = new DataOutputStream(cl.getOutputStream());
             inputSocket = new DataInputStream(cl.getInputStream());
 
+            //Opcion de subir post
             outputSocket.writeUTF("2");
             outputSocket.flush();
 
-            String auxSelected = "";
-            String mensaje = "Nuestros archivos a subir son\n";
-            System.out.println(mensaje);
-            for(String c : uploadFiles){
-                System.out.println("Archivo -> " + c);
-                mensaje+= ("Archivo -> " + c+"\n");
-                auxSelected += (c+",");
-            }
+            //Valores que debera mandar para crear el post
+            String content = "";
+            String user = "";
+            String imagePath = "";
+            String subject="";
 
-            JOptionPane.showMessageDialog(null, mensaje);
 
-            String stringSelectedFiles = auxSelected.substring(0,auxSelected.length()-1);
             String [] selectedFiles = stringSelectedFiles.split(",");
             ArrayList<File> files = new ArrayList<File>();
 
@@ -188,12 +228,10 @@ public class Cliente extends JFrame implements ActionListener {
 
 
                         //Aqui abririamos el post
-
+                    	openPost(index);
 
 
                         System.out.println("ESTA EN EL MAP DE DIRECTORIO");
-                        vector.clear();
-                        navigate(index,file_name+"/");
                     }
                     
                 }
@@ -210,17 +248,10 @@ public class Cliente extends JFrame implements ActionListener {
         container.add(scroll);
         panelBotones = new JPanel();
         panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.X_AXIS));
-        BtnActualizar = new JButton("Carpeta inicial");
+        BtnActualizar = new JButton("Actualizar");
         panelBotones.add(BtnActualizar);
         BtnDescargar = new JButton("Descargar");
         panelBotones.add(BtnDescargar);
-        BtnSeleccionados = new JButton("Archivos a descargar");
-
-        panelBotones.add(BtnSeleccionados);
-        BtnDragDrop = new JButton("Drag and drop");
-        panelBotones.add(BtnDragDrop);
-        BtnArchivosSubir = new JButton("Archivos a subir");
-        panelBotones.add(BtnArchivosSubir);
         BtnSubir = new JButton("Subir");
         panelBotones.add(BtnSubir);
 
@@ -228,9 +259,6 @@ public class Cliente extends JFrame implements ActionListener {
 
         BtnActualizar.addActionListener(this);
         BtnDescargar.addActionListener(this);
-        BtnSeleccionados.addActionListener(this);
-        BtnDragDrop.addActionListener(this);
-        BtnArchivosSubir.addActionListener(this);
         BtnSubir.addActionListener(this);
     }
     //Funcion para establecer una accion a cada boton
@@ -239,13 +267,13 @@ public class Cliente extends JFrame implements ActionListener {
         
         if(b == BtnActualizar) {
             vector.clear();
-            navigate(-1,"");
+            updatePosts();
         }
         else if(b == BtnDescargar){
             iniciarDescarga();
         }
         else if(b == BtnSubir){
-            iniciarSubida();
+            uploadPost();
         }
     }
     public static void main(String s[]) throws IOException{
