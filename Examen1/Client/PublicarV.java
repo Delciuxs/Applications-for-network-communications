@@ -37,8 +37,8 @@ public class PublicarV extends JFrame implements ActionListener {
     public void createPost(){
         String content = txtContenido.getText();
         String nameTopic= txtTema.getText();
-        String date = txtFecha.getText();
-        date = new SimpleDateFormat("dd-MM-yy").format(Calendar.getInstance().getTime());
+        String date = new SimpleDateFormat("dd-MM-yy").format(Calendar.getInstance().getTime());;
+        //date = new SimpleDateFormat("dd-MM-yy").format(Calendar.getInstance().getTime());
         //date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         //JOptionPane.showMessageDialog(null, userName+" "+content+" "+nameTopic+" "+date);
         
