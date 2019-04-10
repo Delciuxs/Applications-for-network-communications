@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="socket.io-file-client.js"></script>
+    <style>
+        body{margin-top:30px;}
+        img{height: 50px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row" id="userFormArea">
+            <div class="col-md-8">
+                <form id="userForm">
+                    <div class="form-group">
+                        <label>Enter Username</label>
+                        <input class="form-control" id="username" autocomplete="off"><br>
+                        <input type="submit" class="btn btn-primary" value="Login">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <div id="messageArea" style="display: none;">
+            <div id="actualUsername"></div>
+            <div class="row"> 
+                <div class="col-md-4">
+                    <div class="well">
+                        <h3>Online Users</h3>
+                        <ul class="list-group" id="users"></ul>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Conversations!</div>
+                        <div class="panel-body">
+                            <br><label for="chatCommunal">Communal Conversation</label><br>
+                            <div class="chat" id="chatCommunal"></div>
+                            <br><label for="chatCommunal">Private Conversation</label><br>
+                            <div class="chat" id="chatPrivate"></div>
+                            <div class="form-group">
+                                <br>
+                                <label>Type Message</label>
+                                <textarea class="form-control" id="message" contentEditable="true"></textarea></br>
+                                <div class="form-inline">
+                                    <span class = "emoji" id = "&#x1F600" value = "smile">&#x1F600</span>
+                                    <span class = "emoji" id = "&#x1F605" value = "smileDrop">&#x1F605</span>
+                                    <span class = "emoji" id = "&#x1F602" value = "joy">&#x1F602</span>
+                                    <span class = "emoji" id = "&#x1F642" value = "normalSmile">&#x1F642</span>
+                                    <span class = "emoji" id = "&#x1F643" value = "downSmile">&#x1F643</span>
+                                    <span class = "emoji" id = "&#x1F609" value = "winking">&#x1F609</span>
+                                    <span class = "emoji" id = "&#x1F60A" value = "cute">&#x1F60A</span>
+                                    <span class = "emoji" id = "&#x1F607" value = "angel">&#x1F607</span>
+                                    <span class = "emoji" id = "&#x1F60D" value = "inLove">&#x1F60D</span>
+                                    <span class = "emoji" id = "&#x1F618" value = "kiss">&#x1F618</span>
+                                    <span class = "emoji" id = "&#x1F61C" value = "tongue">&#x1F61C</span>
+                                    <span class = "emoji" id = "&#x1F61D" value = "xd">&#x1F61D</span>
+                                    <span class = "emoji" id = "&#x1F610" value = "neutral">&#x1F610</span>
+                                    <span class = "emoji" id = "&#x1F611" value = "serious">&#x1F611</span>
+                                    <span class = "emoji" id = "&#x1F614" value = "sad">&#x1F614</span>
+                                    <span class = "emoji" id = "&#x1F634" value = "sleep">&#x1F634</span>
+                                    <span class = "emoji" id = "&#x1F60E" value = "sunGlasses">&#x1F60E</span>
+                                    <span class = "emoji" id = "&#x1F62E" value = "surprice">&#x1F62E</span>
+                                    <span class = "emoji" id = "&#x1F630" value = "anxious">&#x1F630</span>
+                                    <span class = "emoji" id = "&#x1F62D" value = "crying">&#x1F62D</span>
+                                    <span class = "emoji" id = "&#x1F631" value = "omg">&#x1F631</span>
+                                    <span class = "emoji" id = "&#x1F620" value = "angry">&#x1F620</span>
+                                    <span class = "emoji" id = "&#x1F49C" value = "heart">&#x1F49C</span>
+                                </div><br>
+                                <div class="form-inline">
+                                        <button class="btn btn-primary" id= "btnMessage">Send Message</button>
+                                        <br><br>
+                                        <label for="imageFile">Select Image</label>
+                                        <input type="file" id="imageFile">
+                                        <br><br>
+                                        <label for="binaryFile">Select File</label>
+                                        <input type="file" id="binaryFile">
+                                        <br><br>
+                                        <label for="optionsMessage">Send to:</label>
+                                        <select class="toWho" id="optionsMessage">
+                                            <option value="all">All</option>
+                                        </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>
